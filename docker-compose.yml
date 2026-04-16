@@ -1,0 +1,88 @@
+# Fuel Rush Docker Compose
+# Self-hosting with Node.js standalone server — ARM64 and AMD64 supported
+#
+# Usage:
+#   docker compose up -d          # Start in background
+#   docker compose logs -f        # View logs
+#   docker compose down           # Stop
+
+services:
+  fuel-rush:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      # Multi-arch builds are handled by GitHub Actions (see .github/workflows/docker.yml)
+      # For local multi-arch builds, use:
+      #   docker buildx build --platform linux/amd64,linux/arm64 -t fuel-rush .
+    container_name: fuel-rush
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      # ─── App URL (required for OAuth / deep links) ───
+      - NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
+
+      # ─── Database: Supabase Cloud OR Local PostgreSQL ───
+      # Option A: Supabase Cloud (default)
+      - NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
+      - NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+
+      # Option B: Local PostgreSQL (use docker-compose.local.yml)
+      # - DATABASE_URL=${DATABASE_URL:-}
+
+      # ─── Google Maps ───
+      - NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=${NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
+
+      # ─── Cache: Upstash Cloud OR Local Redis ───
+      # Option A: Upstash Cloud (default)
+      - UPSTASH_REDIS_REST_URL=${UPSTASH_REDIS_REST_URL:-}
+      - UPSTASH_REDIS_REST_TOKEN=${UPSTASH_REDIS_REST_TOKEN:-}
+
+      # Option B: Local Redis (use docker-compose.local.yml)
+      # - REDIS_URL=${REDIS_URL:-}
+
+      # ─── Gemini AI ───
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+
+      # ─── Firebase (optional — push notifications) ───
+      - NEXT_PUBLIC_FIREBASE_API_KEY=${NEXT_PUBLIC_FIREBASE_API_KEY:-}
+      - NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=${NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN:-}
+      - NEXT_PUBLIC_FIREBASE_PROJECT_ID=${NEXT_PUBLIC_FIREBASE_PROJECT_ID:-}
+      - NEXT_PUBLIC_FIREBASE_APP_ID=${NEXT_PUBLIC_FIREBASE_APP_ID:-}
+      - NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=${NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID:-}
+      - NEXT_PUBLIC_FIREBASE_VAPID_KEY=${NEXT_PUBLIC_FIREBASE_VAPID_KEY:-}
+
+      - NODE_ENV=production
+      - PORT=3000
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 128M
+    networks:
+      - fuel-rush-internal
+
+# ─── Traefik reverse proxy labels ──────────────────────────────────────────
+# Uncomment and use with: docker compose -f docker-compose.yml -f docker-compose.traefik.yml up -d
+#
+# services:
+#   fuel-rush:
+#     labels:
+#       - "traefik.enable=true"
+#       - "traefik.http.routers.fuel-rush.rule=Host(`fuelrush.yourdomain.com`)"
+#       - "traefik.http.routers.fuel-rush.entrypoints=websecure"
+#       - "traefik.http.routers.fuel-rush.tls.certresolver=letsencrypt"
+#       - "traefik.http.services.fuel-rush.loadbalancer.server.port=3000"
+#       - "traefik.docker.network=web"
+
+networks:
+  fuel-rush-internal:
+    driver: bridge

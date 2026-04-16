@@ -1,0 +1,104 @@
+name: 💡 Feature Request
+description: Suggest a new feature or improvement for Fuel Rush
+labels: ["enhancement", "feature"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 💡 Feature Request
+
+        Got an idea to make Fuel Rush better? We'd love to hear it!
+
+        ---
+        **TIP:** Search existing issues first — your feature may already be planned or requested.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Feature Description
+      description: Clear description of the feature you're requesting
+      placeholder: "I want to be able to..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem It Solves
+      description: Why would this feature be useful? What pain point does it address?
+      placeholder: |
+        As a [user type], I have [problem] which would be solved by [feature].
+        Currently, I have to [workaround] which is [inconvenient/time-consuming].
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: How should this feature work?
+      placeholder: |
+        The feature should:
+        1. ...
+        2. ...
+        3. ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: Any workarounds you've tried? Other solutions you've seen?
+      placeholder: "I've tried... / Other apps use..."
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      options:
+        - Must Have — Blocks core functionality
+        - Should Have — Important but not blocking
+        - Nice to Have — Would improve UX
+        - Future — Not for this release
+    validations:
+      required: true
+
+  - type: dropdown
+    id: user-type
+    attributes:
+      label: User Type
+      description: Who would benefit most from this feature?
+      options:
+        - All users
+        - Motorcyclists
+        - Car drivers (Sedan/SUV)
+        - Commercial vehicle operators
+        - Beta testers
+        - Developers / contributors
+
+  - type: textarea
+    id: mockups
+    attributes:
+      label: Mockups / Wireframes
+      description: Attach any sketches, wireframes, or screenshots showing how the feature should look
+      placeholder: Attach images here (drag & drop or paste)
+
+  - type: textarea
+    id: technical
+    attributes:
+      label: Technical Considerations
+      description: Any technical constraints, API requirements, or implementation notes
+      placeholder: "This might require... / API changes needed..."
+
+  - type: checkboxes
+    id: contribute
+    attributes:
+      label: Willingness to Contribute
+      options:
+        - label: "I'm willing to help implement this feature"
+          required: false
+        - label: "I can provide testing feedback during development"
+          required: false
+        - label: "I have mockups or designs ready"
+          required: false

@@ -1,0 +1,15 @@
+# CODEOWNERS — Fuel Rush
+
+# Default code owner for the entire repository
+* @adnanizaman-star
+
+# Android / Capacitor specific
+/android/ @adnanizaman-star
+/capacitor.config.ts @adnanizaman-star
+
+# Database migrations
+/supabase/migrations/ @adnanizaman-star
+
+# Infrastructure
+/.github/ @adnanizaman-star
+/DEPLOY.md @adnanizaman-star

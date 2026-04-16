@@ -1,0 +1,66 @@
+# Fuel Rush — Local Development Stack
+# Docker Compose override for full local stack (PostgreSQL + Redis + App)
+# Usage: docker compose -f docker-compose.yml -f docker-compose.local.yml up -d
+#
+# IMPORTANT: Set DATABASE_URL and REDIS_URL in your .env file:
+#   DATABASE_URL=postgresql://fuelrush:yourpassword@localhost:5432/fuelrush
+#   REDIS_URL=redis://localhost:6379
+# And comment out Supabase/Upstash vars.
+
+version: '3.8'
+
+services:
+  fuel-rush-web:
+    environment:
+      # ─── Local PostgreSQL (overrides Supabase) ───
+      - DATABASE_URL=${DATABASE_URL:-postgresql://fuelrush:yourpassword@localhost:5432/fuelrush}
+      # Comment out Supabase vars when using local PostgreSQL:
+      # - NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
+      # - NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+
+      # ─── Local Redis (overrides Upstash) ───
+      - REDIS_URL=${REDIS_URL:-redis://redis:6379}
+      # Comment out Upstash vars when using local Redis:
+      # - UPSTASH_REDIS_REST_URL=${UPSTASH_REDIS_REST_URL:-}
+      # - UPSTASH_REDIS_REST_TOKEN=${UPSTASH_REDIS_REST_TOKEN:-}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: fuel-rush-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: fuelrush
+      POSTGRES_USER: fuelrush
+      POSTGRES_PASSWORD: ${LOCAL_POSTGRES_PASSWORD:-yourpassword}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./supabase/migrations:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fuelrush -d fuelrush"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  redis:
+    image: redis:7-alpine
+    container_name: fuel-rush-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redisdata:/data
+    command: redis-server --appendonly yes
+
+volumes:
+  pgdata:
+    name: fuel-rush-pgdata
+  redisdata:
+    name: fuel-rush-redisdata

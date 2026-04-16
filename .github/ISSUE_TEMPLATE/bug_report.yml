@@ -1,0 +1,120 @@
+name: 🐛 Bug Report
+description: Report a bug or unexpected behavior in Fuel Rush
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 🐛 Bug Report
+
+        Thank you for reporting a bug! Please fill in the details below to help us reproduce and fix the issue.
+
+        ---
+        **IMPORTANT:** Search existing issues first — your bug may already be reported.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: Clear description of the bug — what happens vs. what should happen
+      placeholder: "When I do X, I expect Y to happen, but Z occurs instead..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      description: "Numbered steps to reproduce the bug"
+      placeholder: |
+        1. Go to '...'
+        2. Click on '...'
+        3. Scroll down to '...'
+        4. See error
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What should happen
+      placeholder: "The app should..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+      description: What actually happens
+      placeholder: "The app instead..."
+    validations:
+      required: true
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      options:
+        - Critical — App crashes, data loss
+        - High — Feature completely broken
+        - Medium — Feature works but has issues
+        - Low — Minor UI/UX issue
+    validations:
+      required: true
+
+  - type: input
+    id: device
+    attributes:
+      label: Device Model
+      description: "e.g., Samsung Galaxy A14, Xiaomi Redmi Note 12"
+      placeholder: "Your phone model"
+
+  - type: input
+    id: os
+    attributes:
+      label: OS Version
+      description: "e.g., Android 13, One UI 5.1"
+      placeholder: "Android version"
+
+  - type: input
+    id: app-version
+    attributes:
+      label: App Version
+      description: "Found in: Profile → Settings → App Version"
+      placeholder: "e.g., 1.0.0-beta"
+
+  - type: dropdown
+    id: network
+    attributes:
+      label: Network Type
+      options:
+        - 4G / LTE
+        - 3G
+        - WiFi
+        - Unknown
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots / Screenshare
+      description: Attach screenshots showing the bug (drag & drop or paste)
+      placeholder: Attach screenshots here
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Console / Network Logs
+      description: Error messages from browser DevTools Console or Network tab
+      placeholder: |
+        Error: ...
+        at functionName (file:line)
+        ...
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional Context
+      description: Any other details that might help
+      placeholder: "Browser, time of day, etc."
