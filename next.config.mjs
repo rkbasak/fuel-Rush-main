@@ -9,7 +9,7 @@ const isStaticExport = process.env.STATIC_EXPORT === '1';
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: false,
-  ...(isStaticExport ? { output: 'export' } : {}),
+
   images: {
     unoptimized: true,
     remotePatterns: [
